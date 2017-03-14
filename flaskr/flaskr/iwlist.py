@@ -54,7 +54,11 @@ def print_scanning_results(wifi, args=None):
                 (num_channels, frequencies) = wifi.getChannelInfo()
                 print "%-8.16s  Scan completed :" % (wifi.ifname, )
                 index = 1
+                result = {}
                 for ap in results:
+                    result[ap.essid] = {'frequency': wifi._formatFrequency(ap.frequency.getFrequency()),
+                                        'channel': frequencies.index(wifi._formatFrequency(ap.frequency.getFrequency())) + 1} 
+                                        
                     print "          Cell %02d - Address: %s" % (index, ap.bssid)
                     print "                    ESSID:\"%s\"" % (ap.essid, )
                     print "                    Mode:%s" % (ap.mode, )
@@ -125,7 +129,7 @@ def print_scanning_results(wifi, args=None):
                                 "%s" % (wifi._formatBitrate(
                                         rate_list[line * 5 + rate_remainder - 1]))
                     index = index + 1
-            print
+            return result
 
 def print_channels(wifi, args=None):
     """ Print all frequencies/channels available on the card.
