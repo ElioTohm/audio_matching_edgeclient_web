@@ -128,8 +128,8 @@ def print_scanning_results(wifi, args=None):
                     index = index + 1
                     result[ap.essid] = {'Frequency': wifi._formatFrequency(ap.frequency.getFrequency()),
                                         'Channel': frequencies.index(wifi._formatFrequency(ap.frequency.getFrequency())) + 1,
-                                        'Quality': quality_updated+' '+ap.quality.quality+'/'+wifi.getQualityMax().quality,
-                                        'Signal level': signal_updated+' '+ap.quality.getSignallevel()+'/'+"100",
+                                        'Quality': str(ap.quality.quality)+'/'+str(wifi.getQualityMax().quality),
+                                        'Signal level': str(ap.quality.getSignallevel())+'/'+"100",
                                         'Encryption':key_status
                                         }
             return result
