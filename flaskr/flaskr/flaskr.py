@@ -36,10 +36,10 @@ def show_entries():
 	return render_template('helloworld.html', message=Essid)
 
 @app.route('/search', methods=['GET'])
-def add_entry():
+def search():
 	return render_template('helloworld.html', message=iwlist.scan_wifi())
 
 @app.route('/connect', methods=['GET'])
-def add_entry():
+def connect():
 	call(["nmcli", "dev", "wifi", "connect", 'OPI', "password", '12345678'])
 	return render_template('helloworld.html', message=iwlist.scan_wifi())
