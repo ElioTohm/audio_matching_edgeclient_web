@@ -42,7 +42,7 @@
             <tr>
                 <td>{{SSID}}</td>
                 {% for info in SSIDs[SSID] %}
-                    info['Encryption']
+                    {{info['Encryption']}}
                 {% endfor %}
             </tr>
         {% endfor %}
