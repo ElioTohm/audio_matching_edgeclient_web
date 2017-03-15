@@ -1,7 +1,6 @@
 document.getElementById("Connect").className = "active";
 document.getElementById("Status").className = "";
 
-$('.btn .btn-success').on( 'click',function () {
-	alert();
+$('.btn-success').on( 'click',function () {
 	$('#SSID').val() = $(this).attr('id');
 });
