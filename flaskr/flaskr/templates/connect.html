@@ -41,11 +41,11 @@
         {% for SSID in SSIDs: %}
             <tr>
                 <td>{{SSID}}</td>
-                <td>{{SSID.Encryption}}</td>
-                <td>{{SSID.Signallevel}}</td>
-                <td>{{SSID.Frequency}}</td>
-                <td>{{SSID.Quality}}</td>
-                <td>{{SSID.Channel}}</td>
+                <td>{{SSID['Encryption']}}</td>
+                <td>{{SSID['Signallevel']}}</td>
+                <td>{{SSID['Frequency']}}</td>
+                <td>{{SSID['Quality']}}</td>
+                <td>{{SSID['Channel']}}</td>
             </tr>
         {% endfor %}
     </tbody>
