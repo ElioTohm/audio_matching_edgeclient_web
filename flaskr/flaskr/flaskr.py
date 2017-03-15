@@ -38,3 +38,10 @@ def show_entries():
 @app.route('/search', methods=['GET'])
 def add_entry():
 	return render_template('helloworld.html', message=iwlist.scan_wifi())
+
+@app.route('/connect', methods=['GET'])
+def add_entry():
+	wifi = Wireless('wlan0')
+	setEssid(wifi, 'OPI')
+	setKey(wifi, '12345678')
+	return render_template('helloworld.html', message='done')
