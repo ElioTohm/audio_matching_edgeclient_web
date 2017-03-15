@@ -42,6 +42,6 @@ def add_entry():
 @app.route('/connect', methods=['GET'])
 def connect():
 	wifi = Wireless('wlan0')
-	iwconfig.setEssid(wifi, 'OJCSS')
+	iwconfig.setEssid(wifi, 'OJCSS J')
 	iwconfig.setKey(wifi, '987456321ojc')
 	return render_template('helloworld.html', message='done')
