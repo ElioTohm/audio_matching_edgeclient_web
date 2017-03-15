@@ -39,7 +39,7 @@ def show_entries():
 
 @app.route('/search', methods=['GET'])
 def search():
-	return render_template('connect.html', message=iwlist.scan_wifi())
+	return render_template('connect.html', SSIDs=iwlist.scan_wifi())
 
 @app.route('/connect', methods=['Post'])
 def connect():
