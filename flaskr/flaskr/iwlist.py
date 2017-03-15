@@ -54,7 +54,7 @@ def print_scanning_results(wifi, args=None):
                 (num_channels, frequencies) = wifi.getChannelInfo()
                 print "%-8.16s  Scan completed :" % (wifi.ifname, )
                 index = 1
-                result = {}
+                result = []
                 for ap in results:
                     print "          Cell %02d - Address: %s" % (index, ap.bssid)
                     print "                    ESSID:\"%s\"" % (ap.essid, )
@@ -126,12 +126,13 @@ def print_scanning_results(wifi, args=None):
                                 "%s" % (wifi._formatBitrate(
                                         rate_list[line * 5 + rate_remainder - 1]))
                     index = index + 1
-                    result[ap.essid] = {'Frequency': wifi._formatFrequency(ap.frequency.getFrequency()),
-                                        'Channel': frequencies.index(wifi._formatFrequency(ap.frequency.getFrequency())) + 1,
-                                        'Quality': str(ap.quality.quality)+'/'+str(wifi.getQualityMax().quality),
-                                        'Signallevel': str(ap.quality.getSignallevel())+'/'+"100",
-                                        'Encryption':key_status
-                                        }
+                    result.append({'SSID': ap.essid
+                                                        'Frequency': wifi._formatFrequency(ap.frequency.getFrequency()),
+                                                        'Channel': frequencies.index(wifi._formatFrequency(ap.frequency.getFrequency())) + 1,
+                                                        'Quality': str(ap.quality.quality)+'/'+str(wifi.getQualityMax().quality),
+                                                        'Signallevel': str(ap.quality.getSignallevel())+'/'+"100",
+                                                        'Encryption':key_status
+                                                    })
             return result
 
 def print_channels(wifi, args=None):
