@@ -38,7 +38,14 @@
         </tr>
     </thead>
     <tbody>
-        {{SSIDs}}
+        {% for SSID in SSIDs: %}
+            <tr>
+                <td>{{SSID}}</td>
+                {% for info in SSIDs[SSID] %}
+                    info['Encryption']
+                {% endfor %}
+            </tr>
+        {% endfor %}
     </tbody>
   </table>
 </div>
