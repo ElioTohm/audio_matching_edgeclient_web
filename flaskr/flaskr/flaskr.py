@@ -34,5 +34,4 @@ def show_entries():
 
 @app.route('/search', methods=['GET'])
 def add_entry():
-	wifi = Wireless('wlan0')
-	return render_template('helloworld.html', message=iwlist.print_scanning_results(wifi))
+	return render_template('helloworld.html', message=iwlist.scan_wifi())

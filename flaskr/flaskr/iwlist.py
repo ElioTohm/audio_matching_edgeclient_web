@@ -524,40 +524,6 @@ def get_matching_command(option):
                 function = iwcommands[command][1]
     return function
 
-def main():
-    # if only program name is given, print usage info
-    if len(sys.argv) == 1:
-        usage()
-
-    # if program name and one argument are given
-    if len(sys.argv) == 2:
-        option = sys.argv[1]
-        # look for matching command
-        list_command = get_matching_command(option)
-        # if the one argument is a command
-        if list_command is not None:
-            for ifname in getNICnames():
-                wifi = Wireless(ifname)
-                list_command(wifi)
-        else:
-            print "iwlist.py: unknown command `%s' " \
-                  "(check 'iwlist.py --help')." % (option, )
-
-    # if program name and more than one argument are given
-    if len(sys.argv) > 2:
-        # Get the interface and command from command line
-        ifname, option = sys.argv[1:]
-        # look for matching command
-        list_command = get_matching_command(option)
-        # if the second argument is a command
-        if list_command is not None:
-            wifi = Wireless(ifname)
-            list_command(wifi, sys.argv[3:])
-        else:
-            print "iwlist.py: unknown command `%s' " \
-                   "(check 'iwlist.py --help')." % (option, )
-
-
-if __name__ == "__main__":
-    main()
-
+def scan_wifi():
+    wifi = Wireless('wlan0')
+    print_scanning_results(wifi)
