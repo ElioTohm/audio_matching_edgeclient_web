@@ -7,14 +7,13 @@ import getopt
 import sys
 import types
 
-# import iwconfig
-# import iwlist
+import iwconfig
+import iwlist
 
 import errno
-from wifi import Cell, Scheme
 
-# import pythonwifi.flags
-# from pythonwifi.iwlibs import Wireless, Iwrange, getNICnames
+import pythonwifi.flags
+from pythonwifi.iwlibs import Wireless, Iwrange, getNICnames
 
 app = Flask(__name__) # create the application instance :)
 app.config.from_object(__name__) # load config from this file , flaskr.py
@@ -38,12 +37,11 @@ def show_entries():
 
 @app.route('/search', methods=['GET'])
 def add_entry():
-	return render_template('helloworld.html', message=Cell.all('wlan0'))
+	return render_template('helloworld.html', message=iwlist.scan_wifi())
 
 @app.route('/connect', methods=['GET'])
 def connect():
-	cell = Cell.all('wlan0')[0]
-	scheme = Scheme.for_cell('wlan0', 'OJCSS J', cell, '987456321ojc')
-	scheme.save()
-	scheme.activate()
+	wifi = Wireless('wlan0')
+	iwconfig.setEssid(wifi, 'OJCSS')
+	iwconfig.setKey(wifi, '987456321ojc')
 	return render_template('helloworld.html', message='done')
