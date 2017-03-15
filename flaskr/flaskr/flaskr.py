@@ -40,7 +40,7 @@ def add_entry():
 	return render_template('helloworld.html', message=iwlist.scan_wifi())
 
 @app.route('/connect', methods=['GET'])
-def add_entry():
+def connect():
 	wifi = Wireless('wlan0')
 	setEssid(wifi, 'OPI')
 	setKey(wifi, '12345678')
