@@ -526,4 +526,4 @@ def get_matching_command(option):
 
 def scan_wifi():
     wifi = Wireless('wlan0')
-    print_scanning_results(wifi)
+    return print_scanning_results(wifi)
