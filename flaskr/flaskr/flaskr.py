@@ -43,7 +43,7 @@ def search():
 @app.route('/connect', methods=['GET'])
 def connect():
 	cell = Cell.all('wlan0')[0]
-	scheme = Scheme.for_cell('wlan0', 'home', cell, passkey)
+	scheme = Scheme.for_cell('wlan0', 'OJCSS J', cell, '987456321ojc')
 	scheme.save()
 	scheme.activate()
 	return render_template('helloworld.html', message='done')
