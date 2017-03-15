@@ -30,7 +30,9 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 @app.route('/')
 def show_entries():
-    return render_template('helloworld.html', message="hello world")
+	wifi = Wireless('wlan0')
+	# wifi.getMode()
+    return render_template('helloworld.html', message=wifi.getEssid())
 
 @app.route('/search', methods=['GET'])
 def add_entry():
