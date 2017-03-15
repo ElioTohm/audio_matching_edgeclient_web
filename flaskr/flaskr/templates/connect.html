@@ -35,26 +35,27 @@
             <th>Frequency</th>
             <th>Quality</th>
             <th>Channel</th>
+            <th>Use</th>
         </tr>
     </thead>
     <tbody>
-        {% for SSID in SSIDs: %}
-            <tr>
-                <td>{{SSID}}</td>
-                {% for info in SSIDs[SSID] %}
-                    <td>{{SSIDs[SSID][info]}}</td>
-                {% endfor %}
-            </tr>
-        {% endfor %}
+        {% if SSIDs != None %}
+            {% for SSID in SSIDs: %}
+                <tr>
+                    <td>{{SSID}}</td>
+                    {% for info in SSIDs[SSID] %}
+                        <td>{{SSIDs[SSID][info]}}</td>
+                    {% endfor %}
+                    <td>
+                        <button id={{SSID}} class="btn btn-success">use</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
     </tbody>
   </table>
 </div>
 
-<script type="text/javascript">
-  $(function() {
-    document.getElementById("Connect").className = "active";
-    document.getElementById("Status").className = "";
-  });
-</script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/connect.js') }}"></script>
 {% endblock %}
 
