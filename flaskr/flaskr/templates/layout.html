@@ -1,9 +1,9 @@
 <!doctype html>
+<script src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-	<script src="{{ url_for('static', filename='js/jquery-3.1.1.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 
 	<title>XMSpro PM</title>
@@ -14,8 +14,8 @@
 <div class="container">
 	<h3>XMSpro PM</h3>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="#">Status</a></li>
-		<li><a href="#">Connect</a></li>
+		<li id="Status" class="active"><a href="/">Status</a></li>
+		<li id="Connect" ><a href="/connect">Connect</a></li>
 	</ul>
   	<br>
   	{% block body %}{% endblock %}

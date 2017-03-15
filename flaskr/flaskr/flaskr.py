@@ -32,16 +32,21 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 @app.route('/')
 def show_entries():
-	wifi = Wireless('wlan0')
-	Essid = wifi.getEssid()
-	Mode = wifi.getMode()
-	return render_template('helloworld.html', message=Essid)
+	# wifi = Wireless('wlan0')
+	# Essid = wifi.getEssid()
+	# Mode = wifi.getMode()
+	return render_template('home.html')
+	# , message=Essid)
 
 @app.route('/search', methods=['GET'])
 def search():
-	return render_template('helloworld.html', message=iwlist.scan_wifi())
+	return render_template('connect.html', message=iwlist.scan_wifi())
+
+@app.route('/connect', methods=['Post'])
+def connect():
+	call(["nmcli", "dev", "wifi", "connect", request.form['SSID'], "password", request.form['pwd']])
+	return render_template('connect.html')
 
 @app.route('/connect', methods=['GET'])
-def connect():
-	call(["nmcli", "dev", "wifi", "connect", 'OPI', "password", '12345678'])
-	return render_template('helloworld.html', message=iwlist.scan_wifi())
+def show_connect():
+	return render_template('connect.html')
