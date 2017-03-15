@@ -12,8 +12,9 @@ import iwlist
 
 import errno
 
-import pythonwifi.flags
-from pythonwifi.iwlibs import Wireless, Iwrange, getNICnames
+from wifi import Cell, Scheme
+# import pythonwifi.flags
+# from pythonwifi.iwlibs import Wireless, Iwrange, getNICnames
 
 app = Flask(__name__) # create the application instance :)
 app.config.from_object(__name__) # load config from this file , flaskr.py
@@ -36,12 +37,13 @@ def show_entries():
 	return render_template('helloworld.html', message=Essid)
 
 @app.route('/search', methods=['GET'])
-def add_entry():
-	return render_template('helloworld.html', message=iwlist.scan_wifi())
+def search():
+	return render_template('helloworld.html', message=Cell.all('wlan0'))
 
 @app.route('/connect', methods=['GET'])
 def connect():
-	wifi = Wireless('wlan0')
-	iwconfig.setEssid(wifi, 'OJCSS J')
-	iwconfig.setKey(wifi, '987456321ojc')
+	cell = Cell.all('wlan0')[0]
+	scheme = Scheme.for_cell('wlan0', 'home', cell, passkey)
+	scheme.save()
+	scheme.activate()
 	return render_template('helloworld.html', message='done')
