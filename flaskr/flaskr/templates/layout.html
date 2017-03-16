@@ -10,7 +10,22 @@
 </head>
 
 <body>
-
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">XMSpro</a>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+		{% if not session.logged_in %}
+		<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+		{% else %}
+		<li><a href="#"><span class="glyphicon glyphicon-user"></span> Logout</a></li>
+		{% endif %}
+      
+      
+    </ul>
+  </div>
+</nav>
 <div class="container">
 	<h3>XMSpro PM</h3>
 	<ul class="nav nav-tabs">
