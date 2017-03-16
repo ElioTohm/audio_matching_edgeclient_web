@@ -56,10 +56,10 @@ def print_scanning_results(wifi, args=None):
                 index = 1
                 result = {}
                 for ap in results:
-                    print "          Cell %02d - Address: %s" % (index, ap.bssid)
-                    print "                    ESSID:\"%s\"" % (ap.essid, )
-                    print "                    Mode:%s" % (ap.mode, )
-                    print "                    Frequency:%s (Channel %d)" % \
+                    #print "          Cell %02d - Address: %s" % (index, ap.bssid)
+                    #print "                    ESSID:\"%s\"" % (ap.essid, )
+                    #print "                    Mode:%s" % (ap.mode, )
+                    #print "                    Frequency:%s (Channel %d)" % \
                         (wifi._formatFrequency(ap.frequency.getFrequency()),
                         frequencies.index(wifi._formatFrequency(
                             ap.frequency.getFrequency())) + 1)
@@ -78,17 +78,17 @@ def print_scanning_results(wifi, args=None):
                         noise_updated = "="
                     else:
                         noise_updated = ":"
-                    print "                    " + \
-                        "Quality%c%s/%s  Signal level%c%s/%s  Noise level%c%s/%s" % \
-                        (quality_updated,
-                        ap.quality.quality,
-                        wifi.getQualityMax().quality,
-                        signal_updated,
-                        ap.quality.getSignallevel(),
-                        "100",
-                        noise_updated,
-                        ap.quality.getNoiselevel(),
-                        "100")
+                    #print "                    " + \
+                    #    "Quality%c%s/%s  Signal level%c%s/%s  Noise level%c%s/%s" % \
+                    #    (quality_updated,
+                    #    ap.quality.quality,
+                    #    wifi.getQualityMax().quality,
+                    #    signal_updated,
+                    #    ap.quality.getSignallevel(),
+                    #    "100",
+                    #    noise_updated,
+                    #    ap.quality.getNoiselevel(),
+                    #    "100")
                     # This code on encryption keys is very fragile
                     if (ap.encode.flags & pythonwifi.flags.IW_ENCODE_DISABLED):
                         key_status = "off"
@@ -96,7 +96,7 @@ def print_scanning_results(wifi, args=None):
                         if (ap.encode.flags & pythonwifi.flags.IW_ENCODE_NOKEY):
                             if (ap.encode.length <= 0):
                                 key_status = "on"
-                    print "                    Encryption key:%s" % (key_status, )
+                    #print "                    Encryption key:%s" % (key_status, )
                     if len(ap.rate) > 0:
                         for rate_list in ap.rate:
                             # calc how many full lines of bitrates
@@ -120,11 +120,11 @@ def print_scanning_results(wifi, args=None):
                                 # non-first lines should start *very* indented
                                 rate_line = "                              "
                             # print non-full line
-                            print rate_line + "%s; "*(rate_remainder - 1) % \
-                                tuple(wifi._formatBitrate(x) for x in
-                                    rate_list[line * 5:line * 5 + rate_remainder - 1]) + \
-                                "%s" % (wifi._formatBitrate(
-                                        rate_list[line * 5 + rate_remainder - 1]))
+                            # print rate_line + "%s; "*(rate_remainder - 1) % \
+                            #     tuple(wifi._formatBitrate(x) for x in
+                            #         rate_list[line * 5:line * 5 + rate_remainder - 1]) + \
+                            #     "%s" % (wifi._formatBitrate(
+                            #             rate_list[line * 5 + rate_remainder - 1]))
                     index = index + 1
                     result[ap.essid] = {'Frequency': wifi._formatFrequency(ap.frequency.getFrequency()),
                                         'Channel': frequencies.index(wifi._formatFrequency(ap.frequency.getFrequency())) + 1,
