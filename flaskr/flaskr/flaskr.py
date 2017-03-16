@@ -6,6 +6,8 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 import getopt
 import sys
 import types
+import requests 
+import json
 
 import iwconfig
 import iwlist
@@ -65,8 +67,40 @@ def login():
     return render_template('connect.html')
 
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET'])
 def logout():
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('show_entries'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def show_register():
+    if request.method == 'POST':
+    	headers = {'content-type': 'application/json'}
+    	url = 'http://127.0.0.1:45454/register/'
+    	data = {"long": request.form['long'], "lat": request.form['lat']}
+    	
+    	r = requests.post(url, 
+		    		auth=('elio','201092elio'), 
+		    		data=json.dumps(data), 
+		    		headers=headers,
+		    		timeout=15)
+    	if r.json()['location']:
+    		result = {'registered': r.json()['registered'], 'long': r.json()['long'], 'lat': r.json()['lat']}
+    	else:
+    		result = {'registered': r.json()['registered']}
+
+    	with open('conf.json', 'w') as outfile:
+    		json.dump(result, outfile)
+
+    	return render_template('register.html', client= r.json()['registered'],isregisterd=True)
+    else:
+    	if os.path.isfile('conf.json'):
+			module_dir = os.path.dirname(__file__)  # get current directory
+			if os.stat("conf.json").st_size == 0 :
+				return render_template('register.html', isregisterd=False)
+			else:
+				return render_template('register.html', isregisterd=True)
+    	else :
+    		file = open('conf.json', 'w+')
+    		return render_template('register.html', isregisterd=module_dir)
