@@ -35,7 +35,7 @@ def show_entries():
 	wifi = Wireless('wlan0')
 	Essid = wifi.getEssid()
 	Mode = wifi.getMode()
-	return render_template('home.html', message=Essid)
+	return render_template('home.html'), message=Essid)
 
 @app.route('/search', methods=['GET'])
 def search():
@@ -62,7 +62,7 @@ def login():
             session['logged_in'] = True
             flash('You were logged in')
             return redirect(url_for('show_entries'))
-    return render_template('login.html', error=error)
+    return render_template('connect.html')
 
 
 @app.route('/logout')
