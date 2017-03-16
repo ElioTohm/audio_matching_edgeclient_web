@@ -103,4 +103,4 @@ def show_register():
 				return render_template('register.html', isregisterd=True)
     	else :
     		file = open('conf.json', 'w+')
-    		return render_template('register.html', isregisterd=module_dir)
+    		return render_template('register.html', isregisterd=False)
