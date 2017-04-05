@@ -79,7 +79,7 @@ def show_register():
     	headers = {'content-type': 'application/json'}
     	url = 'http://cloudpm.ddns.net:45454/register/'
     	data = {"long": request.form['long'], "lat": request.form['lat']}
-    	
+
     	r = requests.post(url, 
 		    		auth=('elio','201092elio'), 
 		    		data=json.dumps(data), 
@@ -98,9 +98,14 @@ def show_register():
     	if os.path.isfile('conf.json'):
 			module_dir = os.path.dirname(__file__)  # get current directory
 			if os.stat("conf.json").st_size == 0 :
-				return render_template('register.html', isregisterd=False)
+                return render_template('register.html', isregisterd=False)
 			else:
-				return render_template('register.html', isregisterd=True)
+                client = ''
+                # open file and read user ID
+                with open('conf.json') as client_data_file:
+				    client = json.load(json_data_file)
+                return render_template('register.html', isregisterd=True, client= client['registered'])
     	else :
     		file = open('conf.json', 'w+')
     		return render_template('register.html', isregisterd=False)
+
