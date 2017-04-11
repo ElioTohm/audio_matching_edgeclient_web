@@ -76,7 +76,7 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def show_register():
     if request.method == 'POST':
-    	 headers = {'content-type': 'application/json'}
+    	headers = {'content-type': 'application/json'}
         url = 'http://cloudpm.ddns.net:45454/register/'
         data = {"long": request.form['long'], "lat": request.form['lat']}
 
