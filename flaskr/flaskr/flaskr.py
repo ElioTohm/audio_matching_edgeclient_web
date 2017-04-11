@@ -101,10 +101,10 @@ def show_register():
 
     	return render_template('register.html', client= r.json()['registered'],isregisterd=True)
     else:
-    	if os.path.isfile('conf.json'):
+    	if os.path.isfile('/home/conf.json'):
             # get current directory
             module_dir = os.path.dirname(__file__)
-            if os.stat("conf.json").st_size == 0 :
+            if os.stat("/home/conf.json").st_size == 0 :
                 return render_template('register.html', isregisterd=Flase)
             else:
                 client = ''
