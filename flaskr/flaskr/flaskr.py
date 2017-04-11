@@ -96,16 +96,15 @@ def show_register():
     	return render_template('register.html', client= r.json()['registered'],isregisterd=True)
     else:
     	if os.path.isfile('conf.json'):
-			module_dir = os.path.dirname(__file__)  # get current directory
-			if os.stat("conf.json").st_size == 0 :
-                return render_template('register.html', isregisterd=False)
-			else:
+            # get current directory
+            module_dir = os.path.dirname(__file__)
+            if os.stat("conf.json").st_size == 0 :
+                return render_template('register.html', isregisterd=Flase)
+            else:
                 client = ''
-                # open file and read user ID
-                with open('conf.json') as client_data_file:
-				    client = json.load(json_data_file)
-                return render_template('register.html', isregisterd=True, client= client['registered'])
+                with open('/home/config.json') as client_data_file:
+                    client = json.load(client_data_file)
+                return render_template('register.html', isregisterd=True, client=client['registered'])
     	else :
     		file = open('conf.json', 'w+')
     		return render_template('register.html', isregisterd=False)
-
