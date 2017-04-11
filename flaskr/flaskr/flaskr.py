@@ -76,22 +76,28 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def show_register():
     if request.method == 'POST':
-    	headers = {'content-type': 'application/json'}
-    	url = 'http://cloudpm.ddns.net:45454/register/'
-    	data = {"long": request.form['long'], "lat": request.form['lat']}
+    	 headers = {'content-type': 'application/json'}
+        url = 'http://cloudpm.ddns.net:45454/register/'
+        data = {"long": request.form['long'], "lat": request.form['lat']}
 
-    	r = requests.post(url, 
-		    		auth=('elio','201092elio'), 
-		    		data=json.dumps(data), 
-		    		headers=headers,
-		    		timeout=15)
-    	if r.json()['location']:
-    		result = {'registered': r.json()['registered'], 'long': r.json()['long'], 'lat': r.json()['lat']}
-    	else:
-    		result = {'registered': r.json()['registered']}
+        r = requests.post(url, 
+                            auth=('elio','201092elio'), 
+                            data=json.dumps(data), 
+                            headers=headers,
+                            timeout=15)
+        if r.json()['location']:
+                result = {'registered': r.json()['registered'], 'long': r.json()['long'], 'lat': r.json()['lat']}
+        else:
+                result = {'registered': r.json()['registered']}
 
-    	with open('conf.json', 'w') as outfile:
-    		json.dump(result, outfile)
+        with open('/home/conf.json', 'w') as outfile:
+                json.dump(result, outfile)
+
+        with open('/etc/NetworkManager/system-connections/vpn-PMvpn', 'a+') as file:
+                file.write('user=PM'+str(r.json()['registered'])+'\n')
+
+        call(['reboot'])
+
 
     	return render_template('register.html', client= r.json()['registered'],isregisterd=True)
     else:
@@ -102,7 +108,7 @@ def show_register():
                 return render_template('register.html', isregisterd=Flase)
             else:
                 client = ''
-                with open('/home/config.json') as client_data_file:
+                with open('/home/conf.json') as client_data_file:
                     client = json.load(client_data_file)
                 return render_template('register.html', isregisterd=True, client=client['registered'])
     	else :
