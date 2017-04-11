@@ -105,7 +105,7 @@ def show_register():
             # get current directory
             module_dir = os.path.dirname(__file__)
             if os.stat("/home/conf.json").st_size == 0 :
-                return render_template('register.html', isregisterd=Flase)
+                return render_template('register.html', isregisterd=False)
             else:
                 client = ''
                 with open('/home/conf.json') as client_data_file:
