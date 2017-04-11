@@ -86,9 +86,9 @@ def show_register():
                             headers=headers,
                             timeout=15)
         if r.json()['location']:
-                result = {'registered': r.json()['registered'], 'long': r.json()['long'], 'lat': r.json()['lat']}
+                result = {'registered': int(r.json()['registered']), 'long': r.json()['long'], 'lat': r.json()['lat']}
         else:
-                result = {'registered': r.json()['registered']}
+                result = {'registered': int(r.json()['registered'])}
 
         with open('/home/conf.json', 'w') as outfile:
                 json.dump(result, outfile)
