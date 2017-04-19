@@ -6,7 +6,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 import getopt
 import sys
 import types
-import requests 
+import requests
 import json
 
 import iwconfig
@@ -78,11 +78,11 @@ def show_register():
     if request.method == 'POST':
     	headers = {'content-type': 'application/json'}
         url = 'http://cloudpm.ddns.net:45454/register/'
-        data = {"long": request.form['long'], "lat": request.form['lat']}
+        data = {"long": request.form['long'], "lat": request.form['lat'], 'name': request.form['name']}
 
-        r = requests.post(url, 
-                            auth=('elio','201092elio'), 
-                            data=json.dumps(data), 
+        r = requests.post(url,
+                            auth=('elio','201092elio'),
+                            data=json.dumps(data),
                             headers=headers,
                             timeout=15)
         if r.json()['location']:
@@ -95,9 +95,6 @@ def show_register():
 
         with open('/etc/NetworkManager/system-connections/vpn-PMvpn', 'a+') as file:
                 file.write('user=PM'+str(r.json()['registered'])+'\n')
-
-        call(['reboot'])
-
 
     	return render_template('register.html', client= r.json()['registered'],isregisterd=True)
     else:
@@ -114,3 +111,7 @@ def show_register():
     	else :
     		file = open('conf.json', 'w+')
     		return render_template('register.html', isregisterd=False)
+
+@app.route('/save', methods=['POST'])
+def savechanges():
+    call(['reboot'])

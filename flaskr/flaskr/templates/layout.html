@@ -29,14 +29,15 @@
 			<li id="Status" class="active"><a href="/">Status</a></li>
 			<li id="Connect" ><a href="/connect">Connect</a></li>
 			<li id="Register" ><a href="/register">Register client</a></li>
+			<li id="save" ><a href="/save">Save</a></li>
 		</ul>
 	  	<br>
 	  	{% if not session.logged_in %}
-			Please Login to proceed	
+			Please Login to proceed
 		{% else %}
 			{% block body %}{% endblock %}
 		{% endif %}
-	  	
+
 	</div>
 	<!-- Modal -->
 	<div class="modal fade" id="myModal" role="dialog">
