@@ -112,6 +112,6 @@ def show_register():
     		file = open('conf.json', 'w+')
     		return render_template('register.html', isregisterd=False)
 
-@app.route('/save', methods=['POST'])
+@app.route('/save', methods=['GET'])
 def savechanges():
     call(['reboot'])
