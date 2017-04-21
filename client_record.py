@@ -1,57 +1,58 @@
-#!/usr/bin/env python
+"""
+    !/usr/bin/env python
+"""
 # -*- coding: utf-8 -*-
 import subprocess
-import requests
 import time
 import json
 import os
+import requests
 
 # add route
 subprocess.call('route add -net 1.1.1.0/24 dev ppp0', shell=True)
 
 # the server URL
-url = 'http://cloudpm.ddns.net:45454/matching/match/'
+URL = 'http://cloudpm.ddns.net:45454/matching/match/'
 
 # take time
-now = int(time.time())
+NOW = int(time.time())
 
 # open json file to read client id
 with open('/home/conf.json') as json_data_file:
-        # read json info from file
-        data = json.load(json_data_file)
+    # read json info from file
+    DATA = json.load(json_data_file)
 
-if data['registered']:
+if DATA['registered']:
 
     # start record
     subprocess.call('arecord -d 30 -f dat -c 1 /home/records/c_' +
-                    str(data['registered']) + '_'+str(now) + '.wav',
+                    str(DATA['registered']) + '_'+str(NOW) + '.wav',
                     shell=True)
     subprocess.call('lame -r -s 48 -m m -b 64 /home/records/c_' +
-                    str(data['registered'])+'_' + str(now) +
+                    str(DATA['registered'])+'_' + str(NOW) +
                     '.wav /home/records/c_' +
-                    str(data['registered']) + '_' + str(now)+'.mp3',
+                    str(DATA['registered']) + '_' + str(NOW)+'.mp3',
                     shell=True)
-    subprocess.call('rm /home/records/c_' + str(data['registered']) +
-                    '_' + str(now) +
+    subprocess.call('rm /home/records/c_' + str(DATA['registered']) +
+                    '_' + str(NOW) +
                     '.wav', shell=True)
 
     time.sleep(120)
 
     # add file
-    files = []
+    FILES = []
 
     for filerecorded in os.listdir('/home/records/'):
         if filerecorded.endswith('.mp3'):
-            files.append(('client_record', open('/home/records/' +
-                          filerecorded, 'rb')))
+            FILES.append(('client_record', open('/home/records/' + filerecorded, 'rb')))
 
     #  send file to server by post request
-    r = requests.post(url,
-                      files=files,
+    R = requests.post(URL,
+                      files=FILES,
                       auth=('elio', '201092elio'),
                       timeout=15)
 
-    if r.status_code == 200:
+    if R.status_code == 200:
         for filerecorded in os.listdir('/home/records/'):
             if filerecorded.endswith('.mp3'):
                 os.unlink('/home/records/' + filerecorded)
