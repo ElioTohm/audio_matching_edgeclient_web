@@ -42,16 +42,16 @@ if data['registered']:
 
     for filerecorded in os.listdir('/home/records/'):
         if filerecorded.endswith('.mp3'):
-            files.append({'client_record': open(filerecorded, 'rb')})
+            files.append(('client_record', open('/home/records/' +
+                          filerecorded, 'rb')))
 
     #  send file to server by post request
     r = requests.post(url,
                       files=files,
                       auth=('elio', '201092elio'),
                       timeout=15)
-    # print response
-    print r
 
-    for filerecorded in os.listdir('/home/records/'):
-        if filerecorded.endswith('.mp3'):
-            os.remove(filerecorded)
+    if r.status_code == 200:
+        for filerecorded in os.listdir('/home/records/'):
+            if filerecorded.endswith('.mp3'):
+                os.unlink('/home/records/' + filerecorded)
