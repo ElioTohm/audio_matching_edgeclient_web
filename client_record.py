@@ -1,5 +1,7 @@
-"""
-    !/usr/bin/env python
+""".
+
+!/usr/bin/env python
+
 """
 # -*- coding: utf-8 -*-
 import subprocess
@@ -44,7 +46,8 @@ with open('/home/conf.json') as json_data_file:
 
         for filerecorded in os.listdir('/home/records/'):
             if filerecorded.endswith('.mp3'):
-                FILES.append(('client_record', open('/home/records/' + filerecorded, 'rb')))
+                FILES.append(('client_record', open('/home/records/' +
+                              filerecorded, 'rb')))
 
         #  send file to server by post request
         R = requests.post(URL,

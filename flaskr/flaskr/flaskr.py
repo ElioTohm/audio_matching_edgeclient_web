@@ -90,7 +90,7 @@ def show_register():
         else:
                 result = {'registered': int(r.json()['registered'])}
 
-        with open('/home/conf.json', 'w') as outfile:
+        with open('/data/conf.json', 'w') as outfile:
                 json.dump(result, outfile)
 
         with open('/etc/NetworkManager/system-connections/vpn-PMvpn', 'a+') as file:
@@ -98,14 +98,14 @@ def show_register():
 
     	return render_template('register.html', client= r.json()['registered'],isregisterd=True)
     else:
-    	if os.path.isfile('/home/conf.json'):
+        if os.path.isfile('/data/conf.json'):
             # get current directory
             module_dir = os.path.dirname(__file__)
-            if os.stat("/home/conf.json").st_size == 0 :
+            if os.stat("/data/conf.json").st_size == 0 :
                 return render_template('register.html', isregisterd=False)
             else:
                 client = ''
-                with open('/home/conf.json') as client_data_file:
+                with open('/data/conf.json') as client_data_file:
                     client = json.load(client_data_file)
                 return render_template('register.html', isregisterd=True, client=client['registered'])
     	else :
