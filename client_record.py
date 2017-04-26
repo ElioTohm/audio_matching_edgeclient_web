@@ -20,7 +20,7 @@ URL = 'http://cloudpm.ddns.net:45454/matching/match/'
 NOW = int(time.time())
 
 # open json file to read client id
-with open('/home/conf.json') as json_data_file:
+with open('/data/conf.json') as json_data_file:
     # read json info from file
     DATA = json.load(json_data_file)
 

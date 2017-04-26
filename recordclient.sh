@@ -1,2 +1,2 @@
-cd /home/
+cd /data/
 python client_record.py
