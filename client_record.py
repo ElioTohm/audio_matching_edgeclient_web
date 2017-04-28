@@ -39,15 +39,14 @@ with open('/data/conf.json') as json_data_file:
                         '_' + str(NOW) +
                         '.wav', shell=True)
 
-        time.sleep(120)
+        time.sleep(10)
 
         # add file
         FILES = []
 
         for filerecorded in os.listdir('/home/records/'):
             if filerecorded.endswith('.mp3'):
-                FILES.append(('client_record', open('/home/records/' +
-                              filerecorded, 'rb')))
+                FILES.append(('client_record', open('/home/records/' + filerecorded, 'rb')))
 
         #  send file to server by post request
         R = requests.post(URL,
