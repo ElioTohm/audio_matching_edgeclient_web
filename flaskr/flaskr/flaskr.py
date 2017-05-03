@@ -1,65 +1,78 @@
-# all the imports
+"""
+flaskr app to help technician connect set up register device 
+using mqt to connect users to broker
+"""
 import os
-import sqlite3
+import json
+from subprocess import call
+import iwlist
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
-import getopt
-import sys
-import types
 import requests
-import json
+from pythonwifi.iwlibs import Wireless
+import paho.mqtt.client as mqtt
 
-import iwconfig
-import iwlist
+SUB_ADMIN = 'Admin'
+SUB_USER = 'Client'
+URL = 'localhost'
+USER_NAME = 'sammy'
+PASSWORD = '201092'
 
-import errno
-
-import pythonwifi.flags
-from pythonwifi.iwlibs import Wireless, Iwrange, getNICnames
-from subprocess import call
-
-
-app = Flask(__name__) # create the application instance :)
-app.config.from_object(__name__) # load config from this file , flaskr.py
+APP = Flask(__name__) # create the application instance :)
+APP.config.from_object(__name__) # load config from this file , flaskr.py
 
 # Load default config and override config from an environment variable
-app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'flaskr.db'),
+APP.config.update(dict(
+    DATABASE=os.path.join(APP.root_path, 'flaskr.db'),
     SECRET_KEY='development key',
     USERNAME='admin',
     PASSWORD='PM@#12345'
 ))
-app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+APP.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 
-@app.route('/')
+@APP.route('/')
 def show_entries():
-	wifi = Wireless('wlan0')
-	Essid = wifi.getEssid()
-	Mode = wifi.getMode()
-	return render_template('home.html', message=Essid)
+    """
+    show wifi entries
+    """
+    wifi = Wireless('wlan0')
+    essid = wifi.getEssid()
+    return render_template('home.html', message=essid)
 
-@app.route('/search', methods=['GET'])
+@APP.route('/search', methods=['GET'])
 def search():
-	return render_template('connect.html', SSIDs=iwlist.scan_wifi())
+    """
+    search for wifi signal near the device
+    """
+    return render_template('connect.html', SSIDs=iwlist.scan_wifi())
 
-@app.route('/connect', methods=['Post'])
+@APP.route('/connect', methods=['Post'])
 def connect():
-	call(["nmcli", "dev", "wifi", "connect", request.form['SSID'], "password", request.form['pwd']])
-	return render_template('connect.html')
+    """
+    connect to the wifi
+    """
+    call(["nmcli", "dev", "wifi", "connect", request.form['SSID'], "password", request.form['pwd']])
+    return render_template('connect.html')
 
-@app.route('/connect', methods=['GET'])
+@APP.route('/connect', methods=['GET'])
 def show_connect():
-	return render_template('connect.html')
+    """
+    show page to browse and connect wifi available
+    """
+    return render_template('connect.html')
 
-@app.route('/login', methods=['GET', 'POST'])
+@APP.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
+    """
+    on post login user
+    on get show data if the user is logged in
+    """
     if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
+        if request.form['username'] == APP.config['USERNAME']:
+            flash('Invalid username')
+        elif request.form['password'] != APP.config['PASSWORD']:
+            flash('Invalid password')
         else:
             session['logged_in'] = True
             flash('You were logged in')
@@ -67,51 +80,96 @@ def login():
     return render_template('connect.html')
 
 
-@app.route('/logout', methods=['GET'])
+@APP.route('/logout', methods=['GET'])
 def logout():
+    """
+    Get to logout and hide sensitive data from unauthorized users
+    """
     session.pop('logged_in', None)
     flash('You were logged out')
     return redirect(url_for('show_entries'))
 
-@app.route('/register', methods=['GET', 'POST'])
+@APP.route('/register', methods=['GET', 'POST'])
 def show_register():
+    """
+    on get show registration page
+    on post Register client and save response to json file
+    """
     if request.method == 'POST':
-    	headers = {'content-type': 'application/json'}
+        headers = {'content-type': 'application/json'}
         url = 'http://cloudpm.ddns.net:45454/register/'
-        data = {"long": request.form['long'], "lat": request.form['lat'], 'name': request.form['name']}
+        data = {"long": request.form['long'], "lat": request.form['lat'],
+                "name": request.form['name']}
 
-        r = requests.post(url,
-                            auth=('elio','201092elio'),
-                            data=json.dumps(data),
-                            headers=headers,
-                            timeout=15)
-        if r.json()['location']:
-                result = {'registered': int(r.json()['registered']), 'long': r.json()['long'], 'lat': r.json()['lat']}
+        request_result = requests.post(url, auth=('elio', '201092elio'),
+                                       data=json.dumps(data),
+                                       headers=headers,
+                                       timeout=15)
+
+        if request_result.json()['location']:
+            result = {'registered': int(request_result.json()['registered']),
+                      'long': request_result.json()['long'], 'lat': request_result.json()['lat']}
         else:
-                result = {'registered': int(r.json()['registered'])}
+            result = {'registered': int(request_result.json()['registered'])}
 
         with open('/data/conf.json', 'w') as outfile:
-                json.dump(result, outfile)
+            json.dump(result, outfile)
 
         with open('/etc/NetworkManager/system-connections/vpn-PMvpn', 'a+') as file:
-                file.write('user=PM'+str(r.json()['registered'])+'\n')
+            file.write('user=PM'+str(request_result.json()['registered'])+'\n')
 
-    	return render_template('register.html', client= r.json()['registered'],isregisterd=True)
+        return render_template('register.html',
+                               client=request_result.json()['registered'], isregisterd=True)
     else:
         if os.path.isfile('/data/conf.json'):
             # get current directory
-            module_dir = os.path.dirname(__file__)
-            if os.stat("/data/conf.json").st_size == 0 :
+            if os.stat("/data/conf.json").st_size == 0:
                 return render_template('register.html', isregisterd=False)
             else:
                 client = ''
                 with open('/data/conf.json') as client_data_file:
                     client = json.load(client_data_file)
-                return render_template('register.html', isregisterd=True, client=client['registered'])
-    	else :
-    		file = open('conf.json', 'w+')
-    		return render_template('register.html', isregisterd=False)
+                return render_template('register.html',
+                                       isregisterd=True, client=client['registered'])
+        else:
+            file = open('conf.json', 'w+')
+            return render_template('register.html', isregisterd=False)
 
-@app.route('/save', methods=['GET'])
+
+@APP.route('/save', methods=['GET'])
 def savechanges():
+    """
+    reboot device to save files written
+    """
     call(['reboot'])
+
+def on_connect(client, userdata, flags, rc):
+    """
+        The callback for when the client receives a CONNACK response from the server.
+    """
+    print "Connected with result code {} ".format(str(rc))
+
+    # Subscribing in on_connect() means that if we lose the connection and
+    # reconnect then subscriptions will be renewed.
+    client.subscribe(SUB_ADMIN)
+    client.subscribe(SUB_USER)
+
+def on_message(client, userdata, msg):
+    """
+        The callback for when a PUBLISH message is received from the server.
+    """
+    print "{} {}".format(msg.topic, str(msg.payload))
+
+# initialize client
+CLIENT = mqtt.Client(client_id="1", clean_session=False)
+CLIENT.username_pw_set(USER_NAME, password=PASSWORD)
+
+# set on message callback
+CLIENT.on_message = on_message
+CLIENT.on_connect = on_connect
+
+# connect and subscribe
+CLIENT.connect_async(URL, 1883)
+CLIENT.loop_start()
+
+APP.run(host='localhost', port=5000)
