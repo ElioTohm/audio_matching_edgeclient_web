@@ -1,5 +1,5 @@
 """
-flaskr app to help technician connect set up register device 
+flaskr app to help technician connect set up register device
 using mqt to connect users to broker
 """
 import os
