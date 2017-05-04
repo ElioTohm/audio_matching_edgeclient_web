@@ -16,6 +16,8 @@ import config
 APP = Flask(__name__) # create the application instance :)
 APP.config.from_object(__name__) # load config from this file , flaskr.py
 
+CLIENT_ID = None
+
 # Load default config and override config from an environment variable
 APP.config.update(dict(
     DATABASE=os.path.join(APP.root_path, 'flaskr.db'),
@@ -48,7 +50,7 @@ def connect():
     connect to the wifi
     """
     subprocess.call(["nmcli", "dev", "wifi", "connect",
-                    request.form['SSID'], "password", request.form['pwd']])
+                     request.form['SSID'], "password", request.form['pwd']])
     return render_template('connect.html')
 
 @APP.route('/connect', methods=['GET'])
@@ -93,11 +95,11 @@ def show_register():
     """
     if request.method == 'POST':
         headers = {'content-type': 'application/json'}
-        url = 'http://cloudpm.ddns.net:45454/register/'
+
         data = {"long": request.form['long'], "lat": request.form['lat'],
                 "name": request.form['name']}
 
-        request_result = requests.post(url, auth=('elio', '201092elio'),
+        request_result = requests.post(config.REGISTER_URL, auth=('elio', '201092elio'),
                                        data=json.dumps(data),
                                        headers=headers,
                                        timeout=15)
@@ -108,7 +110,7 @@ def show_register():
         else:
             result = {'registered': int(request_result.json()['registered'])}
 
-        with open('/data/conf.json', 'w') as outfile:
+        with open(config.JSON_CONFIG, 'w') as outfile:
             json.dump(result, outfile)
 
         with open('/etc/NetworkManager/system-connections/vpn-PMvpn', 'a+') as file:
@@ -117,18 +119,18 @@ def show_register():
         return render_template('register.html',
                                client=request_result.json()['registered'], isregisterd=True)
     else:
-        if os.path.isfile('/data/conf.json'):
+        if os.path.isfile(config.JSON_CONFIG):
             # get current directory
-            if os.stat("/data/conf.json").st_size == 0:
+            if os.stat(config.JSON_CONFIG).st_size == 0:
                 return render_template('register.html', isregisterd=False)
             else:
                 client = ''
-                with open('/data/conf.json') as client_data_file:
+                with open(config.JSON_CONFIG) as client_data_file:
                     client = json.load(client_data_file)
                 return render_template('register.html',
                                        isregisterd=True, client=client['registered'])
         else:
-            file = open('conf.json', 'w+')
+            file = open(config.JSON_CONFIG, 'w+')
             return render_template('register.html', isregisterd=False)
 
 
@@ -160,16 +162,31 @@ def on_message(client, userdata, msg):
     output = process.communicate()[0]
     print output
 
-# initialize client
-CLIENT = mqtt.Client(client_id="1", clean_session=False)
-CLIENT.username_pw_set(config.USER_NAME, password=config.PASSWORD)
+def check_registration():
+    """
+    check if device is registerer by reading the informations in the conf.js file
+    """
+    if os.stat(config.JSON_CONFIG).st_size > 0:
+        with open(config.JSON_CONFIG) as client_data_file:
+            CLIENT_ID = json.load(client_data_file)
+            CLIENT_ID = CLIENT_ID['registered']
 
-# set on message callback
-CLIENT.on_message = on_message
-CLIENT.on_connect = on_connect
+def startmqttsubscribtion():
+    """
+    start mqt subsctiption if the device has
+    @CLIENT_ID IOW is registered
+    """
+    if CLIENT_ID != None:
+        # initialize client
+        mqttc = mqtt.Client(client_id=CLIENT_ID, clean_session=False)
+        mqttc.username_pw_set(config.USER_NAME, password=config.PASSWORD)
 
-# connect and subscribe
-CLIENT.connect_async(config.URL, 1883)
-CLIENT.loop_start()
+        # set on message callback
+        mqttc.on_message = on_message
+        mqttc.on_connect = on_connect
+
+        # connect and subscribe
+        mqttc.connect_async(config.URL, 1883)
+        mqttc.loop_start()
 
 APP.run(host=config.FLASKR_HOST, port=config.FLASKR_PORT)
