@@ -4,7 +4,7 @@ using mqt to connect users to broker
 """
 import os
 import json
-from subprocess import call
+import subprocess
 import iwlist
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
@@ -12,7 +12,6 @@ import requests
 from pythonwifi.iwlibs import Wireless
 import paho.mqtt.client as mqtt
 import config
-import git
 
 APP = Flask(__name__) # create the application instance :)
 APP.config.from_object(__name__) # load config from this file , flaskr.py
@@ -48,7 +47,8 @@ def connect():
     """
     connect to the wifi
     """
-    call(["nmcli", "dev", "wifi", "connect", request.form['SSID'], "password", request.form['pwd']])
+    subprocess.call(["nmcli", "dev", "wifi", "connect",
+                    request.form['SSID'], "password", request.form['pwd']])
     return render_template('connect.html')
 
 @APP.route('/connect', methods=['GET'])
@@ -137,7 +137,7 @@ def savechanges():
     """
     reboot device to save files written
     """
-    call(['reboot'])
+    subprocess.call(['reboot'])
 
 def on_connect(client, userdata, flags, rc):
     """
@@ -155,9 +155,10 @@ def on_message(client, userdata, msg):
         The callback for when a PUBLISH message is received from the server.
     """
     print "{} {}".format(msg.topic, str(msg.payload))
-    repo = git.Repo(config.GIT_REPO)
-    local_repo = repo.remotes.origin
-    local_repo.pull()
+
+    process = subprocess.Popen(["git", "pull", config.GIT_REPO], stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    print output
 
 # initialize client
 CLIENT = mqtt.Client(client_id="1", clean_session=False)
