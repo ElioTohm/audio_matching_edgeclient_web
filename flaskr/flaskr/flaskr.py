@@ -11,12 +11,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 import requests
 from pythonwifi.iwlibs import Wireless
 import paho.mqtt.client as mqtt
-
-SUB_ADMIN = 'Admin'
-SUB_USER = 'Client'
-URL = 'localhost'
-USER_NAME = 'sammy'
-PASSWORD = '201092'
+import config
 
 APP = Flask(__name__) # create the application instance :)
 APP.config.from_object(__name__) # load config from this file , flaskr.py
@@ -151,8 +146,8 @@ def on_connect(client, userdata, flags, rc):
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe(SUB_ADMIN)
-    client.subscribe(SUB_USER)
+    client.subscribe(config.SUB_ADMIN)
+    client.subscribe(config.SUB_USER)
 
 def on_message(client, userdata, msg):
     """
@@ -162,14 +157,14 @@ def on_message(client, userdata, msg):
 
 # initialize client
 CLIENT = mqtt.Client(client_id="1", clean_session=False)
-CLIENT.username_pw_set(USER_NAME, password=PASSWORD)
+CLIENT.username_pw_set(config.USER_NAME, password=config.PASSWORD)
 
 # set on message callback
 CLIENT.on_message = on_message
 CLIENT.on_connect = on_connect
 
 # connect and subscribe
-CLIENT.connect_async(URL, 1883)
+CLIENT.connect_async(config.URL, 1883)
 CLIENT.loop_start()
 
-APP.run(host='localhost', port=5000)
+APP.run(host='localhost', port=config.PORT)
