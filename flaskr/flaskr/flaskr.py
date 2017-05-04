@@ -172,4 +172,4 @@ CLIENT.on_connect = on_connect
 CLIENT.connect_async(config.URL, 1883)
 CLIENT.loop_start()
 
-APP.run(host='localhost', port=config.PORT)
+APP.run(host='localhost', port=config.FLASKR_PORT)
