@@ -12,6 +12,7 @@ import requests
 from pythonwifi.iwlibs import Wireless
 import paho.mqtt.client as mqtt
 import config
+import git
 
 APP = Flask(__name__) # create the application instance :)
 APP.config.from_object(__name__) # load config from this file , flaskr.py
@@ -154,6 +155,9 @@ def on_message(client, userdata, msg):
         The callback for when a PUBLISH message is received from the server.
     """
     print "{} {}".format(msg.topic, str(msg.payload))
+    repo = git.Repo(config.GIT_REPO)
+    local_repo = repo.remotes.origin
+    local_repo.pull()
 
 # initialize client
 CLIENT = mqtt.Client(client_id="1", clean_session=False)
