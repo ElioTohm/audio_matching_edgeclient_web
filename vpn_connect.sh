@@ -1,0 +1,1 @@
+nmcli con up id "vpn-PMvpn"

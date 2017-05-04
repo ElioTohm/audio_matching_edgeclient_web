@@ -9,12 +9,10 @@ import time
 import json
 import os
 import requests
+import config_main
 
 # add route
-subprocess.call('route add -net 1.1.1.0/24 dev ppp0', shell=True)
-
-# the server URL
-URL = 'http://cloudpm.ddns.net:45454/matching/match/'
+subprocess.call(config_main.ROUTE_EXEC, shell=True)
 
 # take time
 NOW = int(time.time())
@@ -49,7 +47,7 @@ with open('/data/conf.json') as json_data_file:
                 FILES.append(('client_record', open('/home/records/' + filerecorded, 'rb')))
 
         #  send file to server by post request
-        R = requests.post(URL,
+        R = requests.post(config_main.URL,
                           files=FILES,
                           auth=('elio', '201092elio'),
                           timeout=15)
