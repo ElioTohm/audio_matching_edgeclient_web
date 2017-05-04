@@ -2,6 +2,7 @@
 Config file for flask
 """
 
+FLASKR_HOST = '0.0.0.0'
 FLASKR_PORT = 8080
 SUB_ADMIN = 'Admin'
 SUB_USER = 'Client'
