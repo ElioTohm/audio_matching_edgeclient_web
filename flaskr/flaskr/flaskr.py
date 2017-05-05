@@ -106,7 +106,8 @@ def show_register():
             result = {'registered': int(request_result.json()['registered']),
                       'long': request_result.json()['long'], 'lat': request_result.json()['lat']}
         else:
-            result = {'registered': int(request_result.json()['registered'])}
+            result = {'registered': int(request_result.json()['registered']),
+                      'version': float(request_result.json()['version'])}
 
         with open(config.JSON_CONFIG, 'w') as outfile:
             json.dump(result, outfile)
@@ -141,7 +142,7 @@ def savechanges():
 
 def on_connect(client, userdata, flags, rc):
     """
-        The callback for when the client receives a CONNACK response from the server.
+    The callback for when the client receives a CONNACK response from the server.
     """
     print "Connected with result code {} ".format(str(rc))
 
@@ -152,30 +153,38 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     """
-        The callback for when a PUBLISH message is received from the server.
+    The callback for when a PUBLISH message is received from the server.
     """
     print "{} {}".format(msg.topic, str(msg.payload))
+    version = read_confjs('version')
+    message = json.load(msg.payload)
+    if version > float(message['version']):
+        process = subprocess.Popen(["git", "pull", config.GIT_REPO], stdout=subprocess.PIPE)
+        output = process.communicate()[0]
 
-    process = subprocess.Popen(["git", "pull", config.GIT_REPO], stdout=subprocess.PIPE)
-    output = process.communicate()[0]
-    print output
+        client_id = read_confjs('registered')
+        result = {'registered': client_id, 'version': version}
+        with open(config.JSON_CONFIG, 'w') as outfile:
+            json.dump(result, outfile)
 
-def check_registration():
+        print output
+
+def read_confjs(key):
     """
     check if device is registerer by reading the informations in the conf.js file
     """
     if os.stat(config.JSON_CONFIG).st_size > 0:
         with open(config.JSON_CONFIG) as client_data_file:
-            client_id = json.load(client_data_file)
-            client_id = client_id['registered']
-            return str(client_id)
+            keyvalue = json.load(client_data_file)
+            keyvalue = keyvalue[key]
+            return str(keyvalue)
 
-def startmqttsubscribtion():
+def start_mqtt_subscribtion():
     """
     start mqt subsctiption if the device has
     @CLIENT_ID IOW is registered
     """
-    client_id = check_registration()
+    client_id = read_confjs('registered')
     if client_id != None:
         # initialize client
         mqttc = mqtt.Client(client_id=client_id, clean_session=False)
@@ -189,6 +198,6 @@ def startmqttsubscribtion():
         mqttc.connect_async(config.URL, 1883)
         mqttc.loop_start()
 
-startmqttsubscribtion()
+start_mqtt_subscribtion()
 
 APP.run(host=config.FLASKR_HOST, port=config.FLASKR_PORT)
