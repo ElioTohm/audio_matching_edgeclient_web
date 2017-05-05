@@ -176,6 +176,7 @@ def startmqttsubscribtion():
     start mqt subsctiption if the device has
     @CLIENT_ID IOW is registered
     """
+    check_registration()
     if CLIENT_ID != None:
         # initialize client
         mqttc = mqtt.Client(client_id=CLIENT_ID, clean_session=False)
@@ -189,7 +190,6 @@ def startmqttsubscribtion():
         mqttc.connect_async(config.URL, 1883)
         mqttc.loop_start()
 
-check_registration()
 startmqttsubscribtion()
 
 APP.run(host=config.FLASKR_HOST, port=config.FLASKR_PORT)
