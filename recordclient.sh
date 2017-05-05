@@ -1,2 +1,2 @@
-cd /data/
+cd /data/clientwebadmin/
 python client_record.py
