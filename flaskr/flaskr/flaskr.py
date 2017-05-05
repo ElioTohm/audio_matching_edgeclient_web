@@ -157,7 +157,7 @@ def on_message(client, userdata, msg):
     """
     print "{} {}".format(msg.topic, str(msg.payload))
     version = read_confjs('version')
-    message = json.load(msg.payload)
+    message = json.loads(msg.payload)
     if version > float(message['version']):
         process = subprocess.Popen(["git", "pull", config.GIT_REPO], stdout=subprocess.PIPE)
         output = process.communicate()[0]
