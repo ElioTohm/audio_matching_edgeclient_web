@@ -164,7 +164,7 @@ def on_message(client, userdata, msg):
             subprocess.Popen(['reboot'])
     elif msg.topic == 'Admin':
         update_local_code(message['version'])
-        subprocess.Popen(['bash /data/clientwebadmin/admin.sh'])
+        subprocess.call(['bash /data/clientwebadmin/admin.sh'], shell=True)
 
 def read_confjs(key):
     """
