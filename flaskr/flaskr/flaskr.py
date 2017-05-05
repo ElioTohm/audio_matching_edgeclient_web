@@ -163,7 +163,7 @@ def on_message(client, userdata, msg):
         output = process.communicate()[0]
 
         client_id = read_confjs('registered')
-        result = {'registered': client_id, 'version': version}
+        result = {'registered': client_id, 'version': float(message['version'])}
         with open(config.JSON_CONFIG, 'w') as outfile:
             json.dump(result, outfile)
 
