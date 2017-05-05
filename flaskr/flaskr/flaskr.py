@@ -16,8 +16,6 @@ import config
 APP = Flask(__name__) # create the application instance :)
 APP.config.from_object(__name__) # load config from this file , flaskr.py
 
-CLIENT_ID = None
-
 # Load default config and override config from an environment variable
 APP.config.update(dict(
     DATABASE=os.path.join(APP.root_path, 'flaskr.db'),
@@ -168,19 +166,19 @@ def check_registration():
     """
     if os.stat(config.JSON_CONFIG).st_size > 0:
         with open(config.JSON_CONFIG) as client_data_file:
-            CLIENT_ID = json.load(client_data_file)
-            CLIENT_ID = CLIENT_ID['registered']
-            return CLIENT_ID
+            client_id = json.load(client_data_file)
+            client_id = client_id['registered']
+            return str(client_id)
 
 def startmqttsubscribtion():
     """
     start mqt subsctiption if the device has
     @CLIENT_ID IOW is registered
     """
-    CLIENT_ID = check_registration()
-    if CLIENT_ID != None:
+    client_id = check_registration()
+    if client_id != None:
         # initialize client
-        mqttc = mqtt.Client(client_id=str(CLIENT_ID), clean_session=False)
+        mqttc = mqtt.Client(client_id=client_id, clean_session=False)
         mqttc.username_pw_set(config.USER_NAME, password=config.PASSWORD)
 
         # set on message callback
