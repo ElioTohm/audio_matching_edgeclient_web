@@ -170,13 +170,14 @@ def check_registration():
         with open(config.JSON_CONFIG) as client_data_file:
             CLIENT_ID = json.load(client_data_file)
             CLIENT_ID = CLIENT_ID['registered']
+            return CLIENT_ID
 
 def startmqttsubscribtion():
     """
     start mqt subsctiption if the device has
     @CLIENT_ID IOW is registered
     """
-    check_registration()
+    CLIENT_ID = check_registration()
     if CLIENT_ID != None:
         # initialize client
         mqttc = mqtt.Client(client_id=CLIENT_ID, clean_session=False)
