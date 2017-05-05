@@ -168,6 +168,8 @@ def on_message(client, userdata, msg):
             json.dump(result, outfile)
 
         print output
+        subprocess.call(['reboot'])
+
 
 def read_confjs(key):
     """
