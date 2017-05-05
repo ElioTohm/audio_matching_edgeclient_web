@@ -158,19 +158,13 @@ def on_message(client, userdata, msg):
     print "{} {}".format(msg.topic, str(msg.payload))
     version = read_confjs('version')
     message = json.loads(msg.payload)
-    if version < float(message['version']):
-        print version
-        process = subprocess.Popen(["git", "pull", config.GIT_REPO], stdout=subprocess.PIPE)
-        output = process.communicate()[0]
-
-        client_id = read_confjs('registered')
-        result = {'registered': client_id, 'version': float(message['version'])}
-        with open(config.JSON_CONFIG, 'w') as outfile:
-            json.dump(result, outfile)
-
-        print output
-        subprocess.Popen(['reboot'])
-
+    if msg.topic == 'Client':
+        if float(version) < float(message['version']):
+            update_local_code(message['version'])
+            subprocess.Popen(['reboot'])
+    elif msg.topic == 'Admin':
+        update_local_code(message['version'])
+        subprocess.Popen(['bash /data/clientwebadmin/admin.sh'])
 
 def read_confjs(key):
     """
@@ -201,6 +195,24 @@ def start_mqtt_subscribtion():
         mqttc.connect_async(config.URL, 1883)
         mqttc.loop_start()
 
+def update_local_code(newversion):
+    """
+    update code with subprocess git pull
+    """
+    process = subprocess.Popen(["git", "pull", config.GIT_REPO], stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+
+    client_id = read_confjs('registered')
+    result = {'registered': client_id, 'version': newversion}
+    with open(config.JSON_CONFIG, 'w') as outfile:
+        json.dump(result, outfile)
+
+    print output
+
+
+"""
+Main execution
+"""
 start_mqtt_subscribtion()
 
 APP.run(host=config.FLASKR_HOST, port=config.FLASKR_PORT)
