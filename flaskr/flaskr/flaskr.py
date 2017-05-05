@@ -180,7 +180,7 @@ def startmqttsubscribtion():
     CLIENT_ID = check_registration()
     if CLIENT_ID != None:
         # initialize client
-        mqttc = mqtt.Client(client_id=CLIENT_ID, clean_session=False)
+        mqttc = mqtt.Client(client_id=str(CLIENT_ID), clean_session=False)
         mqttc.username_pw_set(config.USER_NAME, password=config.PASSWORD)
 
         # set on message callback
