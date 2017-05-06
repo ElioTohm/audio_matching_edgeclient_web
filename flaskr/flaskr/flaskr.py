@@ -97,7 +97,7 @@ def show_register():
         data = {"long": request.form['long'], "lat": request.form['lat'],
                 "name": request.form['name']}
 
-        request_result = requests.post(config.REGISTER_URL + '/register/',
+        request_result = requests.post(config.REGISTER_URL,
                                        auth=('elio', '201092elio'),
                                        data=json.dumps(data),
                                        headers=headers,
