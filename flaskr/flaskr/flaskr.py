@@ -97,17 +97,15 @@ def show_register():
         data = {"long": request.form['long'], "lat": request.form['lat'],
                 "name": request.form['name']}
 
-        request_result = requests.post(config.REGISTER_URL, auth=('elio', '201092elio'),
+        request_result = requests.post(config.REGISTER_URL + '/register/',
+                                       auth=('elio', '201092elio'),
                                        data=json.dumps(data),
                                        headers=headers,
                                        timeout=15)
 
-        if request_result.json()['location']:
-            result = {'registered': int(request_result.json()['registered']),
-                      'long': request_result.json()['long'], 'lat': request_result.json()['lat']}
-        else:
-            result = {'registered': int(request_result.json()['registered']),
-                      'version': float(request_result.json()['version'])}
+
+        result = {'registered': int(request_result.json()['registered']),
+                  'version': float(request_result.json()['version'])}
 
         with open(config.JSON_CONFIG, 'w') as outfile:
             json.dump(result, outfile)
@@ -116,7 +114,7 @@ def show_register():
             file.write('user=PM'+str(request_result.json()['registered'])+'\n')
 
         return render_template('register.html',
-                               client=request_result.json()['registered'], isregisterd=True)
+                               client=request_result.json()['registered'], isregisterd=True, version=request_result.json()['version'])
     else:
         if os.path.isfile(config.JSON_CONFIG):
             # get current directory
