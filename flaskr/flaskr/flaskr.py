@@ -190,7 +190,7 @@ def start_mqtt_subscribtion():
         mqttc.on_connect = on_connect
 
         # connect and subscribe
-        mqttc.connect_async(config.URL, 1883)
+        mqttc.connect_async(config.PAHO_URL, 1883)
         mqttc.loop_start()
 
 def update_local_code(newversion):
