@@ -114,7 +114,8 @@ def show_register():
             file.write('user=PM'+str(request_result.json()['registered'])+'\n')
 
         return render_template('register.html',
-                               client=request_result.json()['registered'], isregisterd=True, version=request_result.json()['version'])
+                               client=request_result.json()['registered'],
+                               isregisterd=True, version=request_result.json()['version'])
     else:
         if os.path.isfile(config.JSON_CONFIG):
             # get current directory
