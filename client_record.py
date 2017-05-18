@@ -14,7 +14,7 @@ import requests
 import config_main
 
 # add route
-# subprocess.call(config_main.ROUTE_EXEC, shell=True)
+subprocess.call(config_main.ROUTE_EXEC, shell=True)
 
 # take time
 NOW = int(TIME.time())
