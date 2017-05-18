@@ -157,6 +157,7 @@ def on_message(client, userdata, msg):
     print "{} {}".format(msg.topic, str(msg.payload))
     version = read_confjs('version')
     message = json.loads(msg.payload)
+    client_id = read_confjs('registered')
     if msg.topic == 'Client':
         if float(version) < float(message['version']):
             update_local_code(message['version'])
@@ -164,6 +165,8 @@ def on_message(client, userdata, msg):
     elif msg.topic == 'Admin':
         update_local_code(message['version'])
         subprocess.call(['bash /data/clientwebadmin/admin.sh'], shell=True)
+    elif msg.topic == 'test' and int(client_id) == 0:
+        update_local_code(message['version'])
 
 def read_confjs(key):
     """
