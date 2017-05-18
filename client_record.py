@@ -41,7 +41,7 @@ with open('/data/conf.json') as json_data_file:
         FILES = []
         UNLINK_ALL = None
 
-        if CURRENT_TIME >= time(1, 00) and CURRENT_TIME <= time(4, 00):
+        if CURRENT_TIME >= time(2, 00) and CURRENT_TIME <= time(5, 00):
             UNLINK_ALL = True
             for filerecorded in os.listdir('/home/records/'):
                 if filerecorded.endswith('.mp3'):
