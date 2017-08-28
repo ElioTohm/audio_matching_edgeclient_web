@@ -28,15 +28,18 @@ with open('/data/conf.json') as json_data_file:
     if DATA['registered']:
         REC_NAME = "c_{}_{}".format(str(DATA['registered']), str(NOW))
 
+        # for demo purposes we will delete all the previous record 
+        for filerecorded in os.listdir('/home/records/'):
+            if filerecorded.endswith('.mp3'):
+                os.unlink('/home/records/{}'.format(filerecorded))
+
         # start record
         subprocess.call("arecord -d 30 -f dat -c 1 /home/records/{}.wav".format(REC_NAME),
                         shell=True)
         subprocess.call("lame -r -s 48 -m m -b 64 /home/records/{}.wav /home/records/{}.mp3".format(REC_NAME, REC_NAME),
                         shell=True)
         subprocess.call("rm /home/records/{}.wav".format(REC_NAME), shell=True)
-
-        TIME.sleep(10)
-
+        
         # add file
         FILES = []
         UNLINK_ALL = None
