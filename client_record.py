@@ -49,8 +49,8 @@ with open('/data/conf.json') as json_data_file:
         #         if filerecorded.endswith('.mp3'):
         #             FILES.append(('client_record', open('/home/records/' + filerecorded, 'rb')))
         # else:
-            UNLINK_ALL = False
-            FILES.append(('client_record', open("/home/records/{}.mp3".format(REC_NAME), 'rb')))
+        UNLINK_ALL = False
+        FILES.append(('client_record', open("/home/records/{}.mp3".format(REC_NAME), 'rb')))
 
 
         #  send file to server by post request
