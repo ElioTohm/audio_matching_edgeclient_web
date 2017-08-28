@@ -59,10 +59,10 @@ with open('/data/conf.json') as json_data_file:
                           auth=('elio', '201092elio'),
                           timeout=15)
 
-        if R.status_code == 200:
-            if UNLINK_ALL:
-                for filerecorded in os.listdir('/home/records/'):
-                    if filerecorded.endswith('.mp3'):
-                        os.unlink('/home/records/{}'.format(filerecorded))
-            else:
-                os.unlink("/home/records/{}.mp3".format(REC_NAME))
+        # if R.status_code == 200:
+        #     if UNLINK_ALL:
+        #         for filerecorded in os.listdir('/home/records/'):
+        #             if filerecorded.endswith('.mp3'):
+        #                 os.unlink('/home/records/{}'.format(filerecorded))
+        #     else:
+        #         os.unlink("/home/records/{}.mp3".format(REC_NAME))
