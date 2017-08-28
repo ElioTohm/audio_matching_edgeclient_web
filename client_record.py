@@ -40,7 +40,6 @@ with open('/data/conf.json') as json_data_file:
                         shell=True)
         subprocess.call("lame -r -s 48 -m m -b 64 /home/records/{}.wav /home/records/{}.mp3".format(REC_NAME, REC_NAME),
                         shell=True)
-        subprocess.call("rm /home/records/{}.wav".format(REC_NAME), shell=True)
         
         # add file
         FILES = []
