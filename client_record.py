@@ -30,8 +30,7 @@ with open('/data/conf.json') as json_data_file:
 
         # for demo purposes we will delete all the previous record 
         for filerecorded in os.listdir('/home/records/'):
-            if filerecorded.endswith('.mp3'):
-                os.unlink('/home/records/{}'.format(filerecorded))
+            os.unlink('/home/records/{}'.format(filerecorded))
 
         # start record
         subprocess.call("arecord -d 30 -f dat -c 1 /home/records/{}.wav".format(REC_NAME),
