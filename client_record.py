@@ -20,6 +20,11 @@ subprocess.call(config_main.ROUTE_EXEC, shell=True)
 NOW = int(TIME.time())
 CURRENT_TIME = datetime.now().time()
 print NOW
+
+# for demo purposes we will delete all the previous record 
+for filerecorded in os.listdir('/home/records/'):
+    os.unlink('/home/records/{}'.format(filerecorded))
+
 # open json file to read client id
 with open('/data/conf.json') as json_data_file:
     # read json info from file
@@ -27,10 +32,6 @@ with open('/data/conf.json') as json_data_file:
 
     if DATA['registered']:
         REC_NAME = "c_{}_{}".format(str(DATA['registered']), str(NOW))
-
-        # for demo purposes we will delete all the previous record 
-        for filerecorded in os.listdir('/home/records/'):
-            os.unlink('/home/records/{}'.format(filerecorded))
 
         # start record
         subprocess.call("arecord -d 30 -f dat -c 1 /home/records/{}.wav".format(REC_NAME),
@@ -59,7 +60,7 @@ with open('/data/conf.json') as json_data_file:
                           auth=('elio', '201092elio'),
                           timeout=15)
 
-        # if R.status_code == 200:
+        print R.status_code 
         #     if UNLINK_ALL:
         #         for filerecorded in os.listdir('/home/records/'):
         #             if filerecorded.endswith('.mp3'):
