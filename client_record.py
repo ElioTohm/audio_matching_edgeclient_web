@@ -32,7 +32,9 @@ with open('/data/conf.json') as json_data_file:
 
     if DATA['registered']:
         REC_NAME = "c_{}_{}".format(str(DATA['registered']), str(NOW))
-
+        
+        print REC_NAME
+        
         # start record
         subprocess.call("arecord -d 30 -f dat -c 1 /home/records/{}.wav".format(REC_NAME),
                         shell=True)
