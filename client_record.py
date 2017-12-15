@@ -34,7 +34,7 @@ with open('/data/conf.json') as json_data_file:
                 os.unlink('/home/records/{}'.format(filerecorded))
 
         # start record
-        subprocess.call("arecord -d 30 -f dat -c 1 /home/records/{}.wav".format(REC_NAME),
+        subprocess.call("arecord -d 5 -f dat -c 1 /home/records/{}.wav".format(REC_NAME),
                         shell=True)
         subprocess.call("lame -r -s 48 -m m -b 64 /home/records/{}.wav /home/records/{}.mp3".format(REC_NAME, REC_NAME),
                         shell=True)
